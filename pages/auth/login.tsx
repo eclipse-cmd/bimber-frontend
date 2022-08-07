@@ -14,31 +14,26 @@ import {
   Link as Clink,
   Stack,
 } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash, FaLock, FaUserAlt } from "react-icons/fa";
+import AuthWrapper from "@/components/auth/AuthWrapper";
+import InputField from "@/components/layout/form-group/InputField";
+import PasswordField from "@/components/layout/form-group/PasswordField";
 
 const CFaUserAlt = chakra(FaUserAlt);
-const CFaLock = chakra(FaLock);
-const CFaShow = chakra(FaEye);
-const CFaHide = chakra(FaEyeSlash);
 
 interface LoginProps {}
 
 const Login: React.FC<LoginProps> = ({}) => {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const handleShowClick = () => setShowPassword(!showPassword);
+  //Functions
+  const handleSubmit = (values: any) => {
+    console.log(values);
+  };
 
   return (
-    <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      backgroundColor="gray.200"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <AuthWrapper title="Login">
       <Stack
         flexDir="column"
         mb="2"
@@ -49,58 +44,45 @@ const Login: React.FC<LoginProps> = ({}) => {
         <Avatar bg="teal.500" />
         <Heading color="teal.400">Welcome</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
-          <form>
-            <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.900"
-              boxShadow="md"
-            >
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none">
-                    <CFaUserAlt color="gray.300" />
-                  </InputLeftElement>
-                  <Input type="email" placeholder="Email address" />
-                </InputGroup>
-              </FormControl>
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none" color="gray.300">
-                    <CFaLock color="gray.300" />
-                  </InputLeftElement>
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            onSubmit={(values) => handleSubmit(values)}
+          >
+            {({ values, isSubmitting }) => (
+              <Form>
+                <Stack
+                  spacing={4}
+                  p="1rem"
+                  backgroundColor="whiteAlpha.900"
+                  boxShadow="md"
+                >
+                  <InputField
+                    name="email"
+                    inputIcon={<CFaUserAlt color="gray.300" />}
+                    placeholder="Email address"
                   />
-                  <InputRightElement width="3.5rem">
-                    <Button
-                      h="1.75rem"
-                      bg={"none"}
-                      size="sm"
-                      onClick={handleShowClick}
-                    >
-                      {showPassword ? <CFaHide /> : <CFaShow />}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-                <FormHelperText textAlign="right">
-                  <Link href={"/auth/forgot-password"} passHref>
-                    <Clink>Forgot password?</Clink>
-                  </Link>
-                </FormHelperText>
-              </FormControl>
-              <Button
-                borderRadius={0}
-                type="submit"
-                variant="solid"
-                colorScheme="teal"
-                width="full"
-              >
-                Login
-              </Button>
-            </Stack>
-          </form>
+                  <PasswordField name="password" placeholder="Password" />
+                  <FormControl>
+                    <FormHelperText textAlign="right">
+                      <Link href={"/auth/forgot-password"} passHref>
+                        <Clink>Forgot password?</Clink>
+                      </Link>
+                    </FormHelperText>
+                  </FormControl>
+                  <Button
+                    isLoading={isSubmitting}
+                    borderRadius={0}
+                    type="submit"
+                    variant="solid"
+                    colorScheme="teal"
+                    width="full"
+                  >
+                    Login
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Stack>
       <Box>
@@ -111,7 +93,7 @@ const Login: React.FC<LoginProps> = ({}) => {
           </Clink>
         </Link>
       </Box>
-    </Flex>
+    </AuthWrapper>
   );
 };
 

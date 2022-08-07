@@ -5,7 +5,6 @@ import {
   chakra,
   Flex,
   FormControl,
-  FormHelperText,
   Heading,
   Input,
   InputGroup,
@@ -14,6 +13,7 @@ import {
   Link as Clink,
   Stack,
 } from "@chakra-ui/react";
+import { Form, Formik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import {
@@ -23,6 +23,7 @@ import {
   FaLock,
   FaUserAlt,
 } from "react-icons/fa";
+import AuthWrapper from "@/components/auth/AuthWrapper";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaEmail = chakra(FaEnvelope);
@@ -35,17 +36,15 @@ interface RegisterProps {}
 const Register: React.FC<RegisterProps> = ({}) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  //Functions
   const handleShowClick = () => setShowPassword(!showPassword);
 
+  const handleSubmit = (values: any) => {
+    console.log(values);
+  };
+
   return (
-    <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      backgroundColor="gray.200"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <AuthWrapper title="Register">
       <Stack
         flexDir="column"
         mb="2"
@@ -56,74 +55,85 @@ const Register: React.FC<RegisterProps> = ({}) => {
         <Avatar bg="teal.500" />
         <Heading color="teal.400">Thanks for joining us.</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
-          <form>
-            <Stack
-              spacing={4}
-              p="1rem"
-              backgroundColor="whiteAlpha.900"
-              boxShadow="md"
-            >
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none">
-                    <CFaUserAlt color="gray.300" />
-                  </InputLeftElement>
-                  <Input type="text" placeholder="First name" />
-                </InputGroup>
-              </FormControl>
+          <Formik
+            initialValues={{ email: "", password: "" }}
+            onSubmit={(values) => handleSubmit(values)}
+          >
+            {({ values, handleSubmit }) => (
+              <Form>
+                <Stack
+                  spacing={4}
+                  p="1rem"
+                  backgroundColor="whiteAlpha.900"
+                  boxShadow="md"
+                >
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents="none">
+                        <CFaUserAlt color="gray.300" />
+                      </InputLeftElement>
+                      <Input type="text" placeholder="First name" />
+                    </InputGroup>
+                  </FormControl>
 
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none">
-                    <CFaUserAlt color="gray.300" />
-                  </InputLeftElement>
-                  <Input type="text" placeholder="Last name" />
-                </InputGroup>
-              </FormControl>
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents="none">
+                        <CFaUserAlt color="gray.300" />
+                      </InputLeftElement>
+                      <Input type="text" placeholder="Last name" />
+                    </InputGroup>
+                  </FormControl>
 
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none">
-                    <CFaEmail color="gray.300" />
-                  </InputLeftElement>
-                  <Input type="email" placeholder="Email address" />
-                </InputGroup>
-              </FormControl>
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents="none">
+                        <CFaEmail color="gray.300" />
+                      </InputLeftElement>
+                      <Input type="email" placeholder="Email address" />
+                    </InputGroup>
+                  </FormControl>
 
-              <FormControl>
-                <InputGroup>
-                  <InputLeftElement pointerEvents="none" color="gray.300">
-                    <CFaLock color="gray.300" />
-                  </InputLeftElement>
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                  />
-                  <InputRightElement width="3.5rem">
-                    <Button
-                      bg={"none"}
-                      h="1.75rem"
-                      size="sm"
-                      onClick={handleShowClick}
-                    >
-                      {showPassword ? <CFaHide /> : <CFaShow />}
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-              </FormControl>
+                  <FormControl>
+                    <InputGroup>
+                      <InputLeftElement pointerEvents="none" color="gray.300">
+                        <CFaLock color="gray.300" />
+                      </InputLeftElement>
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                      />
+                      <InputRightElement width="3.5rem">
+                        <Button
+                          bg={"none"}
+                          h="1.75rem"
+                          size="sm"
+                          onClick={handleShowClick}
+                        >
+                          {showPassword ? (
+                            <CFaHide color="gray.500" />
+                          ) : (
+                            <CFaShow color="gray.500" />
+                          )}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  </FormControl>
 
-              <Button
-                isLoading={false}
-                borderRadius={0}
-                type="submit"
-                variant="solid"
-                colorScheme="teal"
-                width="full"
-              >
-                Register
-              </Button>
-            </Stack>
-          </form>
+                  <Button
+                    isLoading={false}
+                    borderRadius={0}
+                    type="submit"
+                    variant="solid"
+                    colorScheme="teal"
+                    width="full"
+                  >
+                    Register
+                  </Button>
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         </Box>
       </Stack>
       <Box>
@@ -134,7 +144,7 @@ const Register: React.FC<RegisterProps> = ({}) => {
           </Clink>
         </Link>
       </Box>
-    </Flex>
+    </AuthWrapper>
   );
 };
 
