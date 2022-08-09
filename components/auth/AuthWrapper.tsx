@@ -20,7 +20,7 @@ const AuthWrapper: React.FC<AuthWrapper> = ({ children, title = "" }) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Center h="200px" width="auto" mb={"20px"}>
+        <Center width="auto" mb={"40px"} display="none">
           <Image
             src="/assets/images/logo.jpg"
             width={120}

@@ -1,47 +1,32 @@
+import AuthWrapper from "@/components/auth/AuthWrapper";
+import InputField from "@/components/layout/form-group/InputField";
+import PasswordField from "@/components/layout/form-group/PasswordField";
+import { useRegisterMutation } from "@/generated/generated";
 import {
   Avatar,
   Box,
   Button,
   chakra,
-  Flex,
-  FormControl,
   Heading,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  InputRightElement,
   Link as Clink,
   Stack,
+  Toast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import Link from "next/link";
-import React, { useState } from "react";
-import {
-  FaEnvelope,
-  FaEye,
-  FaEyeSlash,
-  FaLock,
-  FaUserAlt,
-} from "react-icons/fa";
-import AuthWrapper from "@/components/auth/AuthWrapper";
+import React from "react";
+import { useToast } from "@chakra-ui/react";
+import { FaEnvelope, FaUserAlt } from "react-icons/fa";
+import { toErrorMap } from "@/services/helper/toErrorMap";
+import { useRouter } from "next/router";
 
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaEmail = chakra(FaEnvelope);
-const CFaLock = chakra(FaLock);
-const CFaShow = chakra(FaEye);
-const CFaHide = chakra(FaEyeSlash);
 
-interface RegisterProps {}
-
-const Register: React.FC<RegisterProps> = ({}) => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
-  //Functions
-  const handleShowClick = () => setShowPassword(!showPassword);
-
-  const handleSubmit = (values: any) => {
-    console.log(values);
-  };
+const Register: React.FC = ({}) => {
+  const router = useRouter();
+  const [, register] = useRegisterMutation();
+  const toast = useToast();
 
   return (
     <AuthWrapper title="Register">
@@ -56,10 +41,33 @@ const Register: React.FC<RegisterProps> = ({}) => {
         <Heading color="teal.400">Thanks for joining us.</Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
           <Formik
-            initialValues={{ email: "", password: "" }}
-            onSubmit={(values) => handleSubmit(values)}
+            initialValues={{
+              firstname: "emmanuel",
+              lastname: "popoola",
+              email: "thoyorshi@gmail.com",
+              password: "secret",
+            }}
+            onSubmit={async (values, { setErrors }) => {
+              const response = await register({ payload: values });
+              const { errors, user } = response.data?.register!;
+
+              if (errors) {
+                const error = toErrorMap(errors);
+                setErrors(error);
+                toast({
+                  title: "Registration failed.",
+                  description: error.register,
+                  status: "error",
+                  duration: 9000,
+                  isClosable: true,
+                });
+                return;
+              }
+
+              router.push("/");
+            }}
           >
-            {({ values, handleSubmit }) => (
+            {({ isSubmitting }) => (
               <Form>
                 <Stack
                   spacing={4}
@@ -67,61 +75,28 @@ const Register: React.FC<RegisterProps> = ({}) => {
                   backgroundColor="whiteAlpha.900"
                   boxShadow="md"
                 >
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none">
-                        <CFaUserAlt color="gray.300" />
-                      </InputLeftElement>
-                      <Input type="text" placeholder="First name" />
-                    </InputGroup>
-                  </FormControl>
+                  <InputField
+                    name="firstname"
+                    inputIcon={<CFaUserAlt color="gray.300" />}
+                    placeholder="First name"
+                  />
 
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none">
-                        <CFaUserAlt color="gray.300" />
-                      </InputLeftElement>
-                      <Input type="text" placeholder="Last name" />
-                    </InputGroup>
-                  </FormControl>
+                  <InputField
+                    name="lastname"
+                    inputIcon={<CFaUserAlt color="gray.300" />}
+                    placeholder="Last name"
+                  />
 
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none">
-                        <CFaEmail color="gray.300" />
-                      </InputLeftElement>
-                      <Input type="email" placeholder="Email address" />
-                    </InputGroup>
-                  </FormControl>
+                  <InputField
+                    name="email"
+                    inputIcon={<CFaEmail color="gray.300" />}
+                    placeholder="Email address"
+                  />
 
-                  <FormControl>
-                    <InputGroup>
-                      <InputLeftElement pointerEvents="none" color="gray.300">
-                        <CFaLock color="gray.300" />
-                      </InputLeftElement>
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Password"
-                      />
-                      <InputRightElement width="3.5rem">
-                        <Button
-                          bg={"none"}
-                          h="1.75rem"
-                          size="sm"
-                          onClick={handleShowClick}
-                        >
-                          {showPassword ? (
-                            <CFaHide color="gray.500" />
-                          ) : (
-                            <CFaShow color="gray.500" />
-                          )}
-                        </Button>
-                      </InputRightElement>
-                    </InputGroup>
-                  </FormControl>
+                  <PasswordField name="password" placeholder="Password" />
 
                   <Button
-                    isLoading={false}
+                    isLoading={isSubmitting}
                     borderRadius={0}
                     type="submit"
                     variant="solid"
@@ -149,3 +124,5 @@ const Register: React.FC<RegisterProps> = ({}) => {
 };
 
 export default Register;
+
+//2:54

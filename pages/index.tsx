@@ -1,11 +1,16 @@
-import type { NextPage } from 'next'
+import AppWrapper from "@/components/app/AppWrapper";
+import Navbar from "@/components/app/layout/Navbar";
+import { useAuthQuery } from "@/generated/generated";
+import type { NextPage } from "next";
 
 const Home: NextPage = () => {
-  return (
-    <div>
-      index page
-    </div>
-  )
-}
+  const [{ data, fetching }] = useAuthQuery();
 
-export default Home
+  return (
+    <AppWrapper>
+      <Navbar isAuth={data?.auth !== null} />
+    </AppWrapper>
+  );
+};
+
+export default Home;

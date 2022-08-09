@@ -12,10 +12,11 @@ import React, { InputHTMLAttributes } from "react";
 type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   name: string;
   placeholder: string;
+  type?: string;
   inputIcon: React.ReactNode;
 };
 
-const InputField: React.FC<InputFieldProps> = (props) => {
+const InputField: React.FC<InputFieldProps> = ({ type = "text", ...props }) => {
   const [field, { error }] = useField(props);
 
   return (
@@ -24,9 +25,18 @@ const InputField: React.FC<InputFieldProps> = (props) => {
         <InputLeftElement pointerEvents="none">
           {props.inputIcon}
         </InputLeftElement>
-        <Input {...field} id={field.name} placeholder={props.placeholder} />
+        <Input
+          {...field}
+          type={type}
+          id={field.name}
+          placeholder={props.placeholder}
+        />
       </InputGroup>
-      {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+      {error ? (
+        <FormErrorMessage className="css-first-1kxonj9">
+          {error}
+        </FormErrorMessage>
+      ) : null}
     </FormControl>
   );
 };
