@@ -1,11 +1,11 @@
 import AuthWrapper from "@/components/auth/AuthWrapper";
 import InputField from "@/components/layout/form-group/InputField";
-import PasswordField from "@/components/layout/form-group/PasswordField";
-import { useRegisterMutation } from "@/generated/generated";
+import { useForgotPasswordMutation } from "@/generated/generated";
 import createUrqlClient from "@/services/core/urql/createUrqlClient";
 import { toErrorMap } from "@/services/helper/toErrorMap";
 import {
-  Avatar,
+  Alert,
+  AlertIcon,
   Box,
   Button,
   chakra,
@@ -18,19 +18,20 @@ import { Form, Formik } from "formik";
 import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
-import { FaEnvelope, FaUserAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaEnvelope } from "react-icons/fa";
 
-const CFaUserAlt = chakra(FaUserAlt);
 const CFaEmail = chakra(FaEnvelope);
 
-const Register: React.FC = ({}) => {
-  const router = useRouter();
-  const [, register] = useRegisterMutation();
+interface ForgotPasswordProps {}
+
+const ForgotPassword: React.FC<ForgotPasswordProps> = ({}) => {
+  const [, forgotPassword] = useForgotPasswordMutation();
   const toast = useToast();
+  const [status, setStatus] = useState<boolean>(false);
 
   return (
-    <AuthWrapper title="Register">
+    <AuthWrapper title="forgot-password">
       <Stack
         flexDir="column"
         mb="2"
@@ -38,26 +39,22 @@ const Register: React.FC = ({}) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Avatar bg="teal.500" />
-        <Heading color="teal.400">Thanks for joining us.</Heading>
+        <Heading color="teal.400" mb={5}>
+          Recover password
+        </Heading>
         <Box minW={{ base: "90%", md: "468px" }}>
           <Formik
-            initialValues={{
-              firstname: "",
-              lastname: "",
-              email: "",
-              password: "",
-            }}
+            initialValues={{ email: "" }}
             onSubmit={async (values, { setErrors }) => {
-              const response = await register({ payload: values });
-              const { errors, user } = response.data?.register!;
+              const response = await forgotPassword({ payload: values });
 
-              if (errors) {
-                const error = toErrorMap(errors);
+              const { errors, status } = response.data?.forgotPassword!;
+
+              if (!status) {
+                const error = toErrorMap(errors!);
                 setErrors(error);
                 toast({
-                  title: "Registration failed.",
-                  description: error.register,
+                  description: error.forgotPassword ?? "An error occured",
                   status: "error",
                   duration: 9000,
                   isClosable: true,
@@ -65,7 +62,8 @@ const Register: React.FC = ({}) => {
                 return;
               }
 
-              router.push("/");
+              setStatus(status as boolean);
+              values.email = "";
             }}
           >
             {({ isSubmitting }) => (
@@ -76,26 +74,23 @@ const Register: React.FC = ({}) => {
                   backgroundColor="whiteAlpha.900"
                   boxShadow="md"
                 >
+                  {status && (
+                    <Box maxWidth={450} m={"auto"} w={"100%"}>
+                      <Alert status="success" variant="subtle">
+                        <AlertIcon />
+                        <small>
+                          You will receive a link to reset your password in your
+                          email, if you are registered with us.
+                        </small>
+                      </Alert>
+                    </Box>
+                  )}
                   <InputField
-                    name="firstname"
-                    inputIcon={<CFaUserAlt color="gray.300" />}
-                    placeholder="First name"
-                  />
-
-                  <InputField
-                    name="lastname"
-                    inputIcon={<CFaUserAlt color="gray.300" />}
-                    placeholder="Last name"
-                  />
-
-                  <InputField
+                    type="email"
                     name="email"
                     inputIcon={<CFaEmail color="gray.300" />}
                     placeholder="Email address"
                   />
-
-                  <PasswordField name="password" placeholder="Password" />
-
                   <Button
                     isLoading={isSubmitting}
                     borderRadius={0}
@@ -104,7 +99,7 @@ const Register: React.FC = ({}) => {
                     colorScheme="teal"
                     width="full"
                   >
-                    Register
+                    Recover Password
                   </Button>
                 </Stack>
               </Form>
@@ -113,7 +108,7 @@ const Register: React.FC = ({}) => {
         </Box>
       </Stack>
       <Box>
-        Already have an account?
+        Go back
         <Link href="/auth/login" passHref>
           <Clink color="teal.500" ml={"10px"}>
             Login
@@ -124,4 +119,4 @@ const Register: React.FC = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(Register);
+export default withUrqlClient(createUrqlClient)(ForgotPassword);

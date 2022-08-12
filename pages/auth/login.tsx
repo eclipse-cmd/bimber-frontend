@@ -2,6 +2,7 @@ import AuthWrapper from "@/components/auth/AuthWrapper";
 import InputField from "@/components/layout/form-group/InputField";
 import PasswordField from "@/components/layout/form-group/PasswordField";
 import { useLoginMutation } from "@/generated/generated";
+import createUrqlClient from "@/services/core/urql/createUrqlClient";
 import { toErrorMap } from "@/services/helper/toErrorMap";
 import {
   Avatar,
@@ -16,6 +17,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
+import { withUrqlClient } from "next-urql";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -113,4 +115,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createUrqlClient)(Login);

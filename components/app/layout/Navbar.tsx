@@ -30,7 +30,7 @@ interface Props {
 }
 
 const Navbar: React.FC<Props> = ({ isAuth }) => {
-  const [, logout] = useLogoutMutation();
+  const [{ fetching }, logout] = useLogoutMutation();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -47,10 +47,14 @@ const Navbar: React.FC<Props> = ({ isAuth }) => {
                 alt="logo.png"
               />
             </Box>
-            <HStack as="nav" spacing="5" h="100%" p="16px">
-              <Navlinks />
-            </HStack>
-            <Flex alignItems={"center"}>
+            <Flex
+              alignItems={"center"}
+              justifyContent={"space-between"}
+              minW={"50%"}
+            >
+              <HStack flexBasis={1} as="nav" spacing="5" h="100%" p="16px">
+                <Navlinks />
+              </HStack>
               <Stack direction={"row"} spacing={7}>
                 {isAuth ? (
                   <Menu>
@@ -82,7 +86,9 @@ const Navbar: React.FC<Props> = ({ isAuth }) => {
                       <MenuDivider />
                       <MenuItem>Your Servers</MenuItem>
                       <MenuItem>Account Settings</MenuItem>
-                      <MenuItem onClick={() => logout()}>Logout</MenuItem>
+                      <MenuItem isDisabled={fetching} onClick={() => logout()}>
+                        Logout
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 ) : (

@@ -1,11 +1,5 @@
 mutation login($payload: LoginUserPayload!) {
   login(payload: $payload) {
-    user {
-      ...RegularUser
-    }
-    errors {
-      field
-      message
-    }
+    ...RegularUserResponse
   }
 }

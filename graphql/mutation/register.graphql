@@ -1,11 +1,5 @@
 mutation Register($payload: RegisterUserPayload!) {
   register(payload: $payload) {
-    user {
-      ...RegularUser
-    }
-    errors {
-      field
-      message
-    }
+    ...RegularUserResponse
   }
 }

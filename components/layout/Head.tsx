@@ -6,9 +6,11 @@ interface HeadProps {
 }
 
 const DefaultHead: React.FC<HeadProps> = ({ title = null }) => {
+  const pagetitle = title ? `| ${title}` : "";
+
   return (
     <Head>
-      <title>bUBi {title ? `| ${title}` : ""}</title>
+      <title>bUBi {pagetitle}</title>
       <meta name="author" content="Emmanuel Popoola" />
       <meta name="description" content="" />
 
