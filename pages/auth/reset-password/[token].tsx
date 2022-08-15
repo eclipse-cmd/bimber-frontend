@@ -1,5 +1,5 @@
 import AuthWrapper from "@/components/auth/AuthWrapper";
-import PasswordField from "@/components/layout/form-group/PasswordField";
+import PasswordField from "@/components/app/form-group/PasswordField";
 import { useResetPasswordMutation } from "@/generated/generated";
 import createUrqlClient from "@/services/core/urql/createUrqlClient";
 import { toErrorMap } from "@/services/helper/toErrorMap";

@@ -21,7 +21,12 @@ a {
 li {
   list-style: none;
 }
-
+.position-relative {
+  position: relative;
+}
+.minWidth-100 {
+  min-width: 100vh;
+}
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

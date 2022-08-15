@@ -1,5 +1,5 @@
 import React from "react";
-import DefaultHead from "../layout/Head";
+import DefaultHead from "./Head";
 
 interface AuthWrapper {
   children: React.ReactNode;

@@ -1,6 +1,6 @@
 import AuthWrapper from "@/components/auth/AuthWrapper";
-import InputField from "@/components/layout/form-group/InputField";
-import PasswordField from "@/components/layout/form-group/PasswordField";
+import InputField from "@/components/app/form-group/InputField";
+import PasswordField from "@/components/app/form-group/PasswordField";
 import { useLoginMutation } from "@/generated/generated";
 import createUrqlClient from "@/services/core/urql/createUrqlClient";
 import { toErrorMap } from "@/services/helper/toErrorMap";
@@ -61,7 +61,6 @@ const Login: React.FC = () => {
                 return;
               }
 
-              console.log(user);
               router.push("/");
             }}
           >
